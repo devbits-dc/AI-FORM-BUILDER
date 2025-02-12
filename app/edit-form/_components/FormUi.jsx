@@ -143,7 +143,7 @@ const FormUi = ({
                 ))
               ) : (
                 <div className="flex gap-2 items-center">
-                  <Checkbox required={field.required} />
+                        <Checkbox required={field.required} />
                   <h2>{field.label}</h2>
                 </div>
               )}
