@@ -1,11 +1,11 @@
-"use client"
+"use client";
 import { desc, eq } from "drizzle-orm";
-import React, { useEffect,useState } from 'react'
-import {db} from "../../../configs/index"
-import {JsonForms} from "../../../configs/schema"
-import { useUser } from '@clerk/nextjs'
-import FormListItem from "../_components/FormListItem"
-import Loader from "../../_components/Loader"
+import React, { useEffect, useState } from "react";
+import { db } from "../../../configs/index";
+import { JsonForms } from "../../../configs/schema";
+import { useUser } from "@clerk/nextjs";
+import FormListItem from "../_components/FormListItem";
+import Loader from "../../_components/Loader";
 
 const FormList = () => {
   const { user } = useUser();
@@ -65,4 +65,4 @@ const FormList = () => {
   );
 };
 
-export default FormList
+export default FormList;

@@ -29,33 +29,45 @@ const CreateForm = () => {
   
   const onCreateFrom = async () => {
     setLoading(true);
-    const result = await AiChatSession.sendMessage("Description:" + userInput + PROMPT);
-    console.log(
-      result.response
-        .text()
-        .trim()
-        .replace(/^```json|```$/g, "")
+    const result = await AiChatSession.sendMessage(
+      "Description:" + userInput + PROMPT
     );
+    const responseText = await result.response.text();
 
-    if (result.response.text()) {
+    // Extract JSON safely
+    const jsonStart = responseText.indexOf("{");
+    const jsonEnd = responseText.lastIndexOf("}");
+    if (jsonStart === -1 || jsonEnd === -1) {
+      console.error("No JSON found in response");
+      setLoading(false);
+      return;
+    }
+
+    const jsonString = responseText.substring(jsonStart, jsonEnd + 1);
+    console.log("dc",jsonString);
+    try {
+      const cleanedJson = JSON.parse(jsonString); // Ensure it's valid JSON
+      // console.log("Extracted JSON:", cleanedJson);
+      // Store in database
       const resp = await db
         .insert(JsonForms)
         .values({
-          jsonform: result.response.text().replace(/^```json|```$/g, ""),
+          jsonform: JSON.stringify(cleanedJson),
           createdBy: user?.primaryEmailAddress?.emailAddress,
           createdAt: moment().format("DD/MM/YYYY"),
         })
         .returning({ id: JsonForms.id });
 
-      console.log("New form ID", resp[0].id);
-      if (resp[0].id) {
-        route.push('/edit-form/'+ resp[0].id)
+      console.log("New form ID:", resp[0]?.id);
+      if (resp[0]?.id) {
+        route.push("/edit-form/" + resp[0]?.id);
       }
-
-      setLoading(false);
+    } catch (error) {
+      console.error("Invalid JSON:", error);
     }
 
     setLoading(false);
+    
   };
 
   return (
@@ -80,8 +92,7 @@ const CreateForm = () => {
                 Cancel
               </Button>
               <Button disabled={loading} onClick={() => onCreateFrom()}>
-                {loading ? <Loader2 className="animate-spin"/> : 'Create'}
-              
+                {loading ? <Loader2 className="animate-spin" /> : "Create"}
               </Button>
             </div>
           </div>
