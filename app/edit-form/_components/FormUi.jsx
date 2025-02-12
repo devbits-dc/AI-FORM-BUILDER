@@ -130,16 +130,23 @@ const FormUi = ({
           ) : field.fieldType === "checkbox" ? (
             <div className="my-3 w-full">
               <label className="text-xs text-gray-500">{field?.label}</label>
-              {field?.options?.map((item, index) => (
-                <div key={index} className="flex gap-2 items-center">
-                  <Checkbox
-                    onCheckedChange={(v) =>
-                      handleCheckboxChange(field?.label, item.label, v)
-                    }
-                  />
-                  <h2>{item.label}</h2>
+              {field?.options ? (
+                field?.options?.map((item, index) => (
+                  <div key={index} className="flex gap-2 items-center">
+                    <Checkbox
+                      onCheckedChange={(v) =>
+                        handleCheckboxChange(field?.label, item.label, v)
+                      }
+                    />
+                    <h2>{item.label}</h2>
+                  </div>
+                ))
+              ) : (
+                <div className="flex gap-2 items-center">
+                  <Checkbox required={field.required} />
+                  <h2>{field.label}</h2>
                 </div>
-              ))}
+              )}
             </div>
           ) : (
             <div className="my-3 w-full">
